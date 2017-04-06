@@ -1,0 +1,16 @@
+diff --git a/playbooks/repo-server.yml b/playbooks/repo-server.yml
+index d98f2500..86f9f234 100644
+--- a/playbooks/repo-server.yml
++++ b/playbooks/repo-server.yml
+@@ -71,3 +71,11 @@
+     is_metal: "{{ properties.is_metal|default(false) }}"
+   tags:
+     - repo-server
++
++- name: Restart logstash
++  hosts: repo_container
++  user: root
++  tasks:
++    - service:
++        name: nginx
++        state: restarted

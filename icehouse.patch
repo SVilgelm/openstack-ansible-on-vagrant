@@ -1,0 +1,60 @@
+diff --git a/rpc_deployment/playbooks/openstack/nova-api-ec2.yml b/rpc_deployment/playbooks/openstack/nova-api-ec2.yml
+index 564d380d..2f58e7f2 100644
+--- a/rpc_deployment/playbooks/openstack/nova-api-ec2.yml
++++ b/rpc_deployment/playbooks/openstack/nova-api-ec2.yml
+@@ -44,15 +44,3 @@
+     - vars/openstack_service_vars/nova_spice_console_endpoint.yml
+   handlers:
+     - include: handlers/services.yml
+-
+-- hosts: nova_api_ec2:!nova_api_ec2[0]
+-  user: root
+-  roles:
+-    - nova_common
+-    - init_script
+-  vars_files:
+-    - inventory/group_vars/nova_all.yml
+-    - vars/openstack_service_vars/nova_api_ec2.yml
+-    - vars/openstack_service_vars/nova_spice_console_endpoint.yml
+-  handlers:
+-    - include: handlers/services.yml
+diff --git a/rpc_deployment/roles/galera_config/tasks/main.yml b/rpc_deployment/roles/galera_config/tasks/main.yml
+index 092f88e6..cbc67a18 100644
+--- a/rpc_deployment/roles/galera_config/tasks/main.yml
++++ b/rpc_deployment/roles/galera_config/tasks/main.yml
+@@ -34,3 +34,9 @@
+     - { src: debian.cnf, dest: /etc/mysql/debian.cnf }
+     - { src: mysql_init.sh, dest: /etc/init.d/mysql }
+     - { src: mysql_defaults, dest: /etc/default/mysql }
++
++- name: Disable mysql for rc.d
++  shell: update-rc.d mysql disable
++
++- name: Add mysql to rc.local
++  shell: sed -i -e '$i \service mysql start --wsrep-new-cluster \n' /etc/rc.local
+diff --git a/rpc_deployment/roles/utility_common/tasks/main.yml b/rpc_deployment/roles/utility_common/tasks/main.yml
+index 1dc94539..a8e50703 100644
+--- a/rpc_deployment/roles/utility_common/tasks/main.yml
++++ b/rpc_deployment/roles/utility_common/tasks/main.yml
+@@ -25,6 +25,9 @@
+     owner: root
+     group: root
+ 
++- name: Install net-ssh
++  gem: name=net-ssh version=2.9.2 user_install=false
++
+ - name: Install serverspec
+   gem: name=serverspec user_install=false
+ 
+diff --git a/rpc_deployment/vars/config_vars/container_config_nova_compute.yml b/rpc_deployment/vars/config_vars/container_config_nova_compute.yml
+index 0ac9caf2..be3e5b3b 100644
+--- a/rpc_deployment/vars/config_vars/container_config_nova_compute.yml
++++ b/rpc_deployment/vars/config_vars/container_config_nova_compute.yml
+@@ -34,7 +34,6 @@ required_outer_dirs:
+ 
+ kernel_modules:
+   - nbd
+-  - vhost_net
+   - ip6table_filter
+   - ip6_tables
+   - ipt_REJECT
