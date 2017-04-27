@@ -13,6 +13,8 @@ icehouse-ansible          not created (virtualbox)
 icehouse-controller       not created (virtualbox)
 newton-ansible            not created (virtualbox)
 newton-controller         not created (virtualbox)
+
+$ vagrant up icehouse-controller icehouse-ansible
 ```
 
 
@@ -42,4 +44,6 @@ newton-compute-2          not created (virtualbox)
 newton-compute-3          not created (virtualbox)
 newton-compute-4          not created (virtualbox)
 newton-compute-5          not created (virtualbox)
+
+$ vagrant up icehouse-controller-1 icehouse-controller-2 icehouse-controller-3 icehouse-compute-1 icehouse-compute-2 icehouse-compute-3 icehouse-compute-4 icehouse-compute-5 icehouse-ansible
 ```
